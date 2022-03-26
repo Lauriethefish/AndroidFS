@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use crate::serde::{Serialize, Deserialize};
 use crate::models::*;
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -6,7 +6,6 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub type ListFiles = Vec<FileInfo>;
 pub type StatFile = FileInfo;
 pub type ReadFile = u32;
-pub type Echo = u8;
 
 #[derive(Serialize, Deserialize)]
 pub struct FreeSpace {

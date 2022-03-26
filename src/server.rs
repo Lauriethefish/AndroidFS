@@ -1,12 +1,15 @@
 extern crate byteorder;
 extern crate bincode;
-extern crate androidfs_shared;
 extern crate sysinfo;
 extern crate rand;
 extern crate serde;
 
+mod requests;
+mod responses;
+mod models;
+use models::*;
+
 use rand::Rng;
-use androidfs_shared::{models::*, requests, responses};
 
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use sysinfo::{SystemExt, DiskExt};
@@ -62,8 +65,7 @@ fn main() {
             requests::Request::Read(req) => handle_read_file(req, &mut file_handles, &mut client),
             requests::Request::Write(req) => handle_write_file(req, &mut file_handles, &mut client),
             requests::Request::Close(req) => write_response(&mut client, handle_close(req, &mut file_handles)),
-            requests::Request::SetEndOfFile(req) => write_response(&mut client, handle_set_end_of_file(req, &mut file_handles)),
-            requests::Request::Echo(req) =>  write_response(&mut client, Ok(req)),
+            requests::Request::SetEndOfFile(req) => write_response(&mut client, handle_set_end_of_file(req, &mut file_handles))
         };
     }
 }

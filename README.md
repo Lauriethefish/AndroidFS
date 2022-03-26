@@ -5,10 +5,10 @@ A proof of concept for mounting an ADB device as a drive in windows.
 ## Compilation
 1. Install [dokan libary v1.5](https://github.com/dokan-dev/dokany/releases/tag/v1.5.1.1000).
 2. Install [rustup](https://rustup.rs/).
-3. Install the rust Android target: `rustup target add aarch64-linux-android`.
-4. Download the [Android NDK](https://developer.android.com/ndk/downloads), and set `ANDROID_NDK_HOME` to point to its path on your computer.
-5. Compile the server by navigating to `./server` and running `cargo ndk -t arm64-v8a --release`.
-6. Compile by navigating to `./driver` and running `cargo build --release`.
+3. Run `rustup install nightly` to install nightly rust.
+4. Install the rust Android target: `rustup target add aarch64-linux-android`.
+5. Download the [Android NDK](https://developer.android.com/ndk/downloads), and set `ANDROID_NDK_HOME` to point to its path on your computer.
+6. Run `./build.ps1`.
 
 ## Usage
 

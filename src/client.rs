@@ -7,8 +7,9 @@ use dokan::OperationError;
 use winapi::shared::ntstatus::*;
 use serde::de::DeserializeOwned;
 
-use androidfs_shared::*;
-use androidfs_shared::models::FileHandle;
+use crate::models::*;
+use crate::requests;
+use crate::responses;
 
 pub enum Error {
     IOFailed(std::io::Error),

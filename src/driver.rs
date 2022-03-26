@@ -2,7 +2,6 @@
 extern crate dokan;
 extern crate widestring;
 extern crate winapi;
-extern crate androidfs_shared;
 extern crate bincode;
 extern crate byteorder;
 extern crate linked_hash_map;
@@ -14,6 +13,10 @@ mod adb;
 mod client;
 mod cache;
 mod file_system;
+mod models;
+mod requests;
+mod responses;
+
 use dokan::{Drive, MountFlags};
 use file_system::*;
 use widestring::U16CString;

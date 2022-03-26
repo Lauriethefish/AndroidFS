@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use crate::serde::{Serialize, Deserialize};
 use crate::models::*;
 
 #[derive(Serialize, Deserialize)]
@@ -9,13 +9,12 @@ pub enum Request {
     CreateFile(CreateFile),
     CreateDirectory(CreateDirectory),
     Open(OpenFile),
-    Close(FileHandle),
+    Close(CloseFile),
     Move(MoveFile),
     GetFreeSpace,
     Read(ReadFile),
     Write(WriteFile),
-    SetEndOfFile(SetEndOfFile),
-    Echo(u8)
+    SetEndOfFile(SetEndOfFile)
 }
 
 #[derive(Serialize, Deserialize)]

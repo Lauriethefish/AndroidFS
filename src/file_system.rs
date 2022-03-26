@@ -1,15 +1,15 @@
 use std::time::Duration;
 
-use androidfs_shared::*;
 use crate::client;
 use crate::cache::Cache;
 
 use dokan::*;
-use androidfs_shared::models::FileHandle;
 use widestring::{U16CStr, U16CString};
 use winapi::um::winnt::{self, PSECURITY_DESCRIPTOR, FILE_ATTRIBUTE_DIRECTORY, FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS, FILE_ATTRIBUTE_REPARSE_POINT, FILE_ATTRIBUTE_RECALL_ON_OPEN};
 use winapi::shared::ntstatus::*;
 use crate::log::*;
+use crate::models::FileHandle;
+use crate::models;
 
 pub struct QuestFsHandler {
     volume_name: U16CString,
