@@ -185,7 +185,11 @@ fn setup(device: adb::Device, drive_map: Arc<Mutex<HashSet<String>>>) -> Result<
 }
 
 fn main() {
-	env_logger::init();
+	match std::env::var("RUST_LOG") {
+		Ok(_) => env_logger::init(), // Use the given log level if set
+		// Otherwise, default to DEBUG for now
+		Err(_) => env_logger::Builder::from_default_env().filter(None, LevelFilter::Debug).init()
+	}
 
 	let adb = adb::DebugBridge {
 		adb_path: r"adb.exe".to_string()

@@ -25,7 +25,7 @@ impl<K: Hash + Eq + Clone, V: Clone> Cache<K, V> {
     pub fn put(&self, key: K, value: V) {
         let mut cache = self.cache.write().unwrap();
         if cache.len() >= self.max_size {
-			let first_key = cache.keys().next().unwrap().clone();
+			let first_key = cache.iter().next().unwrap().0.clone();
 			cache.remove(&first_key);
 		}
 
