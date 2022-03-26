@@ -8,6 +8,7 @@ extern crate linked_hash_map;
 extern crate serde;
 extern crate log;
 extern crate env_logger;
+extern crate tempfile;
 
 mod adb;
 mod client;
@@ -22,6 +23,7 @@ use file_system::*;
 use widestring::U16CString;
 use log::*;
 use std::collections::HashSet;
+use std::io::Write;
 use std::net::{SocketAddrV4, Ipv4Addr};
 
 use std::{time::Duration, sync::{Arc, Mutex}, net::TcpStream};
@@ -31,6 +33,9 @@ use client::Client;
 
 const BASE_PORT: u16 = 15000;
 const MAX_PORT: u16 = 16000;
+
+const SERVER_EXECUTABLE: &[u8] = include_bytes!("../target/aarch64-linux-android/release/androidfs_server");
+const SERVER_PUSH_PATH: &str = "/data/local/tmp/androidfs_server";
 
 // List the mount points in the order we prefer to use them
 const MOUNT_POINTS: &[&'static str] = &[
@@ -63,12 +68,19 @@ enum SetupError {
 	NoAvailablePort,
 	NoAvailableDriveLetter,
 	AdbError(adb::Error),
+	IOError(std::io::Error),
 	DaemonUnreachable
 }
 
 impl From<adb::Error> for SetupError {
     fn from(err: adb::Error) -> Self {
         Self::AdbError(err)
+    }
+}
+
+impl From<std::io::Error> for SetupError {
+    fn from(err: std::io::Error) -> Self {
+        Self::IOError(err)
     }
 }
 
@@ -79,6 +91,7 @@ impl std::fmt::Display for SetupError {
 			Self::NoAvailablePort => f.write_str("No port available to forward the daemon to"),
 			Self::NoAvailableDriveLetter => f.write_str("No drive letter available"),
             Self::DaemonUnreachable => f.write_str("Failed to connect to the daemon"),
+            Self::IOError(err) => f.write_fmt(format_args!("An IO error occurred while extracting the daemon: {}", err)),
 		}?;
 		Ok(())
     }
@@ -119,8 +132,11 @@ fn setup(device: adb::Device, drive_map: Arc<Mutex<HashSet<String>>>) -> Result<
 		None => return Err(SetupError::NoAvailableDriveLetter)
 	};
 
+	let mut file = tempfile::NamedTempFile::new()?;
+	file.write_all(SERVER_EXECUTABLE)?;
+
 	// Push the daemon and make it executable
-	device.invoke_result(vec!["push".to_string(), "./androidfs_server".to_string(), "/data/local/tmp".to_string()])?;
+	device.invoke_result(vec!["push".to_string(), file.path().to_str().unwrap().to_string(), SERVER_PUSH_PATH.to_string()])?;
 	device.invoke_shell_command_result(vec!["chmod".to_string(), "555".to_string(), "/data/local/tmp/androidfs_server".to_string()])?;
 	
 	{

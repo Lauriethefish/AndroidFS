@@ -16,6 +16,7 @@ widestring = "0.4.3"
 [target.'cfg(windows)'.dependencies]
 winapi = "0.3.9"
 dokan = "0.2.0+dokan150"
+tempfile = "3.3.0"
 
 [[bin]]
 name = "androidfs_driver"
