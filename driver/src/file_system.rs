@@ -47,8 +47,8 @@ impl QuestFsHandler {
             volume_name: volume_name,
             client: client,
 			// TODO: Test these values more and see what is reasonable in terms of accuracy and speed
-            directory_cache: Cache::new(Duration::from_millis(1000), 50),
-			stat_cache: Cache::new(Duration::from_secs(1000), 1000)
+            directory_cache: Cache::new(Duration::from_secs(10), 128),
+			stat_cache: Cache::new(Duration::from_secs(3), 1024)
         }
     }
 
