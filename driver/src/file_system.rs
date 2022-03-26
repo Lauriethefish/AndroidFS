@@ -1,11 +1,11 @@
 use std::time::Duration;
 
-use shared::*;
+use androidfs_shared::*;
 use crate::client;
 use crate::cache::Cache;
 
 use dokan::*;
-use shared::models::FileHandle;
+use androidfs_shared::models::FileHandle;
 use widestring::{U16CStr, U16CString};
 use winapi::um::winnt::{self, PSECURITY_DESCRIPTOR, FILE_ATTRIBUTE_DIRECTORY, FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS, FILE_ATTRIBUTE_REPARSE_POINT, FILE_ATTRIBUTE_RECALL_ON_OPEN};
 use winapi::shared::ntstatus::*;
@@ -14,8 +14,8 @@ use crate::log::*;
 pub struct QuestFsHandler {
     volume_name: U16CString,
 	client: client::Client,
-	directory_cache: Cache<String, Result<Vec<shared::models::FileInfo>, OperationError>>,
-	stat_cache: Cache<String, Result<shared::models::FileInfo, OperationError>>
+	directory_cache: Cache<String, Result<Vec<models::FileInfo>, OperationError>>,
+	stat_cache: Cache<String, Result<models::FileInfo, OperationError>>
 }
 
 
@@ -25,7 +25,7 @@ fn convert_file_name(win_file_name: &U16CStr) -> String {
 }
 
 // Approximates the linux file mode using winnt file attributes
-fn convert_attributes(file: &shared::models::FileInfo) -> u32 {
+fn convert_attributes(file: &models::FileInfo) -> u32 {
 	// Tell windows that our files take longer to access
 	// Unfortunately it doesn't seem as though this actually changes the way it treats them (it will still try to open all the images in a folder to preview them, for example)
 	let mut attributes = FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS | FILE_ATTRIBUTE_RECALL_ON_OPEN;

@@ -1,0 +1,6 @@
+[package]
+name = "androidfs_shared"
+version = "0.1.0"
+
+[dependencies]
+serde = { version = "1.0.136", features = ["derive"] }

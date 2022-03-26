@@ -1,12 +1,12 @@
 extern crate byteorder;
 extern crate bincode;
-extern crate shared;
+extern crate androidfs_shared;
 extern crate sysinfo;
 extern crate rand;
 extern crate serde;
 
 use rand::Rng;
-use shared::{models::*, requests, responses};
+use androidfs_shared::{models::*, requests, responses};
 
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use sysinfo::{SystemExt, DiskExt};
@@ -256,7 +256,7 @@ fn metadata_to_file_info(file_name: String, metadata: fs::Metadata) -> FileInfo 
     }
 }
 
-fn to_response_error(err: std::io::Error) -> shared::responses::Error {
+fn to_response_error(err: std::io::Error) -> responses::Error {
     match err.raw_os_error() {
         Some(os_err) => {
             match os_err {

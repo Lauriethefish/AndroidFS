@@ -2,12 +2,11 @@
 extern crate dokan;
 extern crate widestring;
 extern crate winapi;
-extern crate shared;
+extern crate androidfs_shared;
 extern crate bincode;
 extern crate byteorder;
 extern crate linked_hash_map;
 extern crate serde;
-extern crate rand;
 extern crate log;
 extern crate env_logger;
 
@@ -118,8 +117,8 @@ fn setup(device: adb::Device, drive_map: Arc<Mutex<HashSet<String>>>) -> Result<
 	};
 
 	// Push the daemon and make it executable
-	device.invoke_result(vec!["push".to_string(), "./server".to_string(), "/data/local/tmp".to_string()])?;
-	device.invoke_shell_command_result(vec!["chmod".to_string(), "555".to_string(), "/data/local/tmp/server".to_string()])?;
+	device.invoke_result(vec!["push".to_string(), "./androidfs_server".to_string(), "/data/local/tmp".to_string()])?;
+	device.invoke_shell_command_result(vec!["chmod".to_string(), "555".to_string(), "/data/local/tmp/androidfs_server".to_string()])?;
 	
 	{
 		let drive_map = drive_map.clone();
@@ -127,7 +126,7 @@ fn setup(device: adb::Device, drive_map: Arc<Mutex<HashSet<String>>>) -> Result<
 		std::thread::spawn(move || {
 			debug!("Hello from daemon thread");
 			let device = device;
-			match device.invoke_shell_command_result(vec!["./data/local/tmp/server".to_string()]) {
+			match device.invoke_shell_command_result(vec!["./data/local/tmp/androidfs_server".to_string()]) {
 				Ok(_) => {},
 				Err(err) => {
 					error!("Invoking daemon failed: {}", err)
