@@ -1,4 +1,4 @@
-use std::{process::{Command, Output}, fmt::Display};
+use std::{process::{Command, Output}, fmt::Display, os::windows::process::CommandExt};
 use crate::log::*;
 
 #[derive(Clone, Debug)]
@@ -92,6 +92,7 @@ impl Invokeable for DebugBridge {
     fn invoke(&self, command: Vec<String>) -> Output {
         trace!("Invoking ADB: {:?}", command);
         Command::new(self.adb_path.clone())
+            .creation_flags(0x08000000) // CREATE_NO_WINDOW
             .args(command)
             .output()
             .expect("Invoking ADB failed")

@@ -204,11 +204,16 @@ fn setup(device: adb::Device, drive_map: Arc<Mutex<HashSet<String>>>) -> Result<
 }
 
 fn main() {
+	if std::env::var("ANDROIDFS_CONSOLE").is_err() {
+		unsafe { winapi::um::wincon::FreeConsole(); }
+	}
+
 	match std::env::var("RUST_LOG") {
 		Ok(_) => env_logger::init(), // Use the given log level if set
 		// Otherwise, default to DEBUG for now
 		Err(_) => env_logger::Builder::from_default_env().filter(None, LevelFilter::Debug).init()
 	}
+
 	info!("Searching for devices");
 
 	let adb = adb::DebugBridge {
