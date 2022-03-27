@@ -1,0 +1,48 @@
+name: Windows Installer
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Build installer 
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: nightly
+    - uses: Swatinem/rust-cache@v1
+
+    - name: Download Inno Setup
+      uses: suisei-cn/actions-download-file@v1
+      with:
+        url: https://jrsoftware.org/download.php/is.exe
+        target: ../
+    - name: Download Dokan Installer
+      uses: suisei-cn/actions-download-file@v1
+      with:
+        url: https://github.com/dokan-dev/dokany/releases/download/v1.5.1.1000/Dokan_x64.msi
+        target: ./installer/
+    - name: Install Inno Setup
+      run: '../is.exe /VERYSILENT /NORESTART /ALLUSERS'
+    - run: rustup update nightly && rustup default nightly
+    - run: cargo install cargo-ndk
+    - run: rustup target add aarch64-linux-android
+    - name: Compile AndroidFS
+      run: ./build.ps1
+    - name: Compile Installer
+      run: '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /f installer/installer.iss'
+    - name: Standalone upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: standalone
+        path: ./target/release/*.exe
+    - name: Installer Upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: installer
+        path: ./installer/*.exe

@@ -1,0 +1,1 @@
+AndroidFS is now installed. Simply plug in an ADB device and it will automatically mount it as a drive.
