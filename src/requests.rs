@@ -65,6 +65,7 @@ pub struct OpenFile {
 
 #[derive(Serialize, Deserialize)]
 pub struct MoveFile {
-    from: String,
-    to: String
+    pub from: String,
+    pub to: String,
+    pub replace_if_exists: bool
 }

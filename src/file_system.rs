@@ -64,6 +64,14 @@ impl QuestFsHandler {
 			}
 		}
 	}
+
+	fn trigger_update(&self, file_name: &String) {
+		self.stat_cache.erase(file_name);
+		match std::path::Path::new(file_name.as_str()).parent() {
+			Some(parent) => self.directory_cache.erase(&parent.to_string_lossy().to_string()),
+			None => {}
+		};
+	}
 }
 
 impl<'a, 'b: 'a> FileSystemHandler<'a, 'b> for QuestFsHandler {
@@ -247,6 +255,8 @@ impl<'a, 'b: 'a> FileSystemHandler<'a, 'b> for QuestFsHandler {
 		// TODO: Never called, likely due to incomplete create_file
 
 		let file_name = convert_file_name(win_file_name);
+		self.trigger_update(&file_name);
+
 		client::convert_response(self.client.delete_file(file_name))
 	}
 
@@ -259,19 +269,30 @@ impl<'a, 'b: 'a> FileSystemHandler<'a, 'b> for QuestFsHandler {
 		// TODO: Never called, likely due to incomplete open_file
 
 		let file_name = convert_file_name(win_file_name);
+		self.trigger_update(&file_name);
+
 		client::convert_response(self.client.delete_file(file_name))
 	}
 
     fn move_file(
 		&'b self,
-		_file_name: &U16CStr,
-		_new_file_name: &U16CStr,
-		_replace_if_existing: bool,
+		file_name: &U16CStr,
+		new_file_name: &U16CStr,
+		replace_if_existing: bool,
 		_info: &OperationInfo<'a, 'b, Self>,
 		_context: &'a Self::Context,
 	) -> Result<(), OperationError> {
-		// TODO
-		Err(OperationError::NtStatus(STATUS_NOT_IMPLEMENTED))
+		let from = convert_file_name(file_name);
+		let to = convert_file_name(new_file_name);
+
+		self.trigger_update(&from);
+		self.trigger_update(&to);
+
+		client::convert_response(self.client.move_file(
+			from,
+			to,
+			replace_if_existing
+		))
 	}
 
     fn set_end_of_file(

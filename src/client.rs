@@ -116,6 +116,14 @@ impl Client {
         }))
     }
 
+    pub fn move_file(&self, from: String, to: String, replace_if_exists: bool) -> Result<()> {
+        self.send(requests::Request::Move(requests::MoveFile {
+            from: from,
+            to: to,
+            replace_if_exists: replace_if_exists
+        }))
+    }
+
     pub fn read_file(&self, handle: FileHandle, offset: u64, buffer: &mut [u8]) -> Result<u32> {
         let req = requests::Request::Read(requests::ReadFile {
             handle: handle,

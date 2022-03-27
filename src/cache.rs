@@ -22,6 +22,11 @@ impl<K: Hash + Eq + Clone, V: Clone> Cache<K, V> {
         }
     }
 
+    pub fn erase(&self, key: &K) {
+        let mut cache = self.cache.write().unwrap();
+        cache.remove(key);
+    }
+
     pub fn put(&self, key: K, value: V) {
         let mut cache = self.cache.write().unwrap();
         if cache.len() >= self.max_size {

@@ -59,7 +59,7 @@ fn main() {
             requests::Request::CreateDirectory(_) => todo!(),
             requests::Request::Open(req) => write_response(&mut client, handle_open(req, &mut file_handles)),
             requests::Request::Delete(req) => write_response(&mut client, handle_delete_file(req)),
-            requests::Request::Move(_) => todo!(),
+            requests::Request::Move(req) => write_response(&mut client, handle_move_file(req)),
             requests::Request::GetFreeSpace => write_response(&mut client, handle_get_free_space()),
             requests::Request::Stat(req) => write_response(&mut client, handle_stat_file(req)),
             requests::Request::Read(req) => handle_read_file(req, &mut file_handles, &mut client),
@@ -123,6 +123,17 @@ fn handle_open(request: requests::OpenFile, file_handles: &mut FileHandleMap) ->
             file_handles.insert(handle_id, file);
             Ok(handle_id)
         },
+        Err(err) => Err(to_response_error(err))
+    }
+}
+
+fn handle_move_file(request: requests::MoveFile) -> responses::Result<()> {
+    if !request.replace_if_exists && std::path::Path::new(request.to.as_str()).exists() {
+        return Err(responses::Error::FileExists)
+    }
+
+    match std::fs::rename(request.from, request.to) {
+        Ok(_) => Ok(()),
         Err(err) => Err(to_response_error(err))
     }
 }
