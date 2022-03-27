@@ -209,6 +209,7 @@ fn main() {
 		// Otherwise, default to DEBUG for now
 		Err(_) => env_logger::Builder::from_default_env().filter(None, LevelFilter::Debug).init()
 	}
+	info!("Searching for devices");
 
 	let adb = adb::DebugBridge {
 		adb_path: r"adb.exe".to_string()
