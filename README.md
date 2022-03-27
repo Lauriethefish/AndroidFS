@@ -12,11 +12,13 @@ A proof of concept for mounting an ADB device as a drive in windows.
 
 ## Usage
 
-NOTE: Prebuilt binaries are not currently available.
+NOTE: AndroidFS is currently in an alpha state, be careful.
 
-Run `./android_fs.exe`.
+1. Install [dokan libary v1.5](https://github.com/dokan-dev/dokany/releases/tag/v1.5.1.1000).
+2. Binaries can be downloaded from [actions](https://github.com/Lauriethefish/AndroidFS/actions).
+3. Run `./android_fs.exe`.
+
 Devices will be automatically added/removed as drives when connected/disconnected.
-
 The default drive letter is `Q:`
 
 ## Architecture
