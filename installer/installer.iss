@@ -47,7 +47,7 @@ Filename: "{cmd}"; Parameters: "/C start /B """" /wait msiexec.exe /i ""{tmp}/do
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{commonstartup}\My Program"; Filename: "{app}\{#MyAppExeName}"
+Name: "{commonstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"
